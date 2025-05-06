@@ -1,0 +1,203 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- 🔝 Título o nombre -->
+
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nombre"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:padding="8dp" />
+
+    <!-- Divider superior -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="8dp"/>
+
+    <!-- 📈 Gráfico principal -->
+    <FrameLayout
+        android:id="@+id/chartContainer"
+        android:layout_width="match_parent"
+        android:layout_height="533dp"
+        android:layout_weight="1">
+
+        <!-- Solo se mostrará uno a la vez -->
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart1"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="gone" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart2"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="gone" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart3"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="gone" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart4"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="gone" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart5"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/btnNext"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="#00000000" />
+
+        <View
+            android:id="@+id/btnPrev"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="#00000000" />
+
+        <!-- Agrega más charts aquí si los necesitas -->
+    </FrameLayout>
+    <!-- 🔝 Título o nombre -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="271dp"
+        android:orientation="horizontal">
+
+        <!-- 📝 Columna de textos -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/linea1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Línea 1" />
+
+            <TextView
+                android:id="@+id/linea2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Línea 2" />
+
+            <TextView
+                android:id="@+id/linea3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Línea 3" />
+
+            <View
+                android:id="@+id/lightIndicator"
+                android:layout_width="93dp"
+                android:layout_height="98dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/light_bulb" />
+
+            <Button
+                android:id="@+id/btnConnect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="Conectar"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <!-- 🔘 Botón a la derecha -->
+        <Button
+            android:id="@+id/btnSmile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text=":)"
+            android:textSize="24sp" />
+    </LinearLayout>
+
+
+
+    <!-- Divider superior -->
+
+    <!-- Divider inferior -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="8dp"/>
+
+    <!-- ⬇ Contenedor inferior con texto + 4 círculos -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- 📝 Información -->
+        <TextView
+            android:id="@+id/infoText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Información aquí"
+            android:textSize="16sp"
+            android:padding="8dp" />
+
+        <!-- 🔘 Círculos -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+            <View
+                android:id="@+id/led0"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/led_off"
+                android:layout_margin="4dp" />
+            <View
+                android:id="@+id/led1"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/led_off"
+                android:layout_margin="4dp" />
+            <View
+                android:id="@+id/led2"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/led_off"
+                android:layout_margin="4dp" />
+            <View
+                android:id="@+id/led3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@drawable/led_off"
+                android:layout_margin="4dp" />
+
+
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
