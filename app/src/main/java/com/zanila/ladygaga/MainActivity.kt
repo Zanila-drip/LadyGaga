@@ -15,6 +15,8 @@ import com.github.mikephil.charting.data.LineDataSet
 
 class MainActivity : AppCompatActivity() {
 
+    lateinit var temperaturaText: TextView
+    lateinit var humedadText: TextView
     private lateinit var bluetoothHandler: BluetoothHandler
     private lateinit var charts: List<LineChart>
     private lateinit var dataSets: List<LineDataSet>
@@ -37,8 +39,15 @@ class MainActivity : AppCompatActivity() {
         bluetoothHandler = BluetoothHandler(this)
         bluetoothHandler.checkAndRequestPermissions(this)
 
+        temperaturaText = findViewById(R.id.linea1)
+        humedadText = findViewById(R.id.linea2)
+
+        bluetoothHandler.setDataReceivedListener { message ->
+            procesarDatosBluetooth(message) // Llamada correcta al listener
+        }
+
         val buttonConnect = findViewById<Button>(R.id.btnConnect)
-        buttonConnect.setOnClickListener {
+        buttonConnect.setOnClickListener @androidx.annotation.RequiresPermission(android.Manifest.permission.BLUETOOTH_CONNECT) {
             bluetoothHandler.connectToHC05(
                 onConnected = { Toast.makeText(this, "Conectado al HC-05", Toast.LENGTH_SHORT).show() },
                 onError = { errorMessage -> Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show() }
@@ -47,14 +56,14 @@ class MainActivity : AppCompatActivity() {
 
         val titleText = findViewById<TextView>(R.id.titleText)
         titleText.text = "Héctor Patricio"
-        val titleText2 = findViewById<TextView>(R.id.linea1)
-        titleText2.text = "Héctor Patricio"
+
+        //-------------------------------------------------------------------------
 
         val led2 = findViewById<View>(R.id.led2)
-        led2.setBackgroundResource(R.drawable.led_on) // o .led_off
+        led2.setBackgroundResource(R.drawable.led_on)
 
         val light = findViewById<View>(R.id.lightIndicator)
-        val intensity = 0.0f // de 0.0 a 1.0
+        val intensity = 0.0f
         light.alpha = intensity
 
         charts = listOf(
@@ -83,28 +92,40 @@ class MainActivity : AppCompatActivity() {
             showPreviousChart()
         }
 
-        // Establecer el OnTouchListener para el primer gráfico
         charts[0].setOnTouchListener(ChartUtils.setupTouchListenerForChartSwitching(charts[0]) { showNextChart() })
 
         handler.post(updateRunnable)
     }
 
+    // Mover la función procesarDatosBluetooth fuera del onCreate()
+    fun procesarDatosBluetooth(data: String) {
+        val temperaturaRegex = Regex("Temperatura: ([0-9.]+)")
+        val humedadRegex = Regex("Humedad: ([0-9.]+)")
+
+        val temperaturaMatch = temperaturaRegex.find(data)
+        val humedadMatch = humedadRegex.find(data)
+
+        val temperatura = temperaturaMatch?.groups?.get(1)?.value
+        val humedad = humedadMatch?.groups?.get(1)?.value
+
+        if (temperatura != null && humedad != null) {
+            temperaturaText.text = "Temperatura: $temperatura °C"
+            humedadText.text = "Humedad: $humedad %"
+        }
+    }
+
     private fun showPreviousChart() {
         ChartUtils.showChart(charts, currentChartIndex)
-        charts[currentChartIndex].setOnTouchListener(null) // Remove previous listener
-
+        charts[currentChartIndex].setOnTouchListener(null)
         currentChartIndex = if (currentChartIndex - 1 < 0) charts.size - 1 else currentChartIndex - 1
-
         ChartUtils.showChart(charts, currentChartIndex)
         charts[currentChartIndex].setOnTouchListener(ChartUtils.setupTouchListenerForChartSwitching(charts[currentChartIndex]) { showNextChart() })
     }
 
     private fun showNextChart() {
         ChartUtils.showChart(charts, currentChartIndex)
-        charts[currentChartIndex].setOnTouchListener(null) // Remove previous listener
-
+        charts[currentChartIndex].setOnTouchListener(null)
         currentChartIndex = (currentChartIndex + 1) % charts.size
-
         ChartUtils.showChart(charts, currentChartIndex)
         charts[currentChartIndex].setOnTouchListener(ChartUtils.setupTouchListenerForChartSwitching(charts[currentChartIndex]) { showNextChart() })
     }
@@ -112,6 +133,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         bluetoothHandler.disconnect()
-        handler.removeCallbacks(updateRunnable) // Importante detener el Handler
+        handler.removeCallbacks(updateRunnable)
     }
 }
