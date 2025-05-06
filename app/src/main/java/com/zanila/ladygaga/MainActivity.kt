@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var temperaturaText: TextView
     lateinit var humedadText: TextView
+    lateinit var luzText: TextView
     private lateinit var bluetoothHandler: BluetoothHandler
     private lateinit var charts: List<LineChart>
     private lateinit var dataSets: List<LineDataSet>
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         temperaturaText = findViewById(R.id.linea1)
         humedadText = findViewById(R.id.linea2)
+        luzText = findViewById(R.id.linea3)
 
         bluetoothHandler.setDataReceivedListener { message ->
             procesarDatosBluetooth(message) // Llamada correcta al listener
@@ -99,6 +102,7 @@ class MainActivity : AppCompatActivity() {
 
     // Mover la función procesarDatosBluetooth fuera del onCreate()
     fun procesarDatosBluetooth(data: String) {
+        Log.d("BluetoothData", "Datos recibidos: $data")
         val temperaturaRegex = Regex("Temperatura: ([0-9.]+)")
         val humedadRegex = Regex("Humedad: ([0-9.]+)")
 
@@ -112,6 +116,10 @@ class MainActivity : AppCompatActivity() {
             temperaturaText.text = "Temperatura: $temperatura °C"
             humedadText.text = "Humedad: $humedad %"
         }
+        val luzRegex = Regex("Luz: ([0-9]+)")
+        val luzMatch = luzRegex.find(data)
+        val luz = luzMatch?.groups?.get(1)?.value
+        luzText.text = "Luz: ${luz ?: "--"}"
     }
 
     private fun showPreviousChart() {
