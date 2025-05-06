@@ -1,56 +1,86 @@
 package com.zanila.ladygaga
 
 
-import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
-import android.content.Context
-import android.widget.Toast
-import androidx.annotation.RequiresPermission
+import android.util.Log
+import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStream
-import java.util.*
+import java.util.UUID
+@SuppressLint("MissingPermission")
+class BluetoothHandler(
+    private val bluetoothAdapter: BluetoothAdapter,
+    private val macAddress: String = "00:23:10:00:D3:38"
+) : Thread() {
 
-class BluetoothManager(private val context: Context, private val macAddress: String) {
+    private var bluetoothSocket: BluetoothSocket? = null
+    private lateinit var inputStream: InputStream
+    private lateinit var outputStream: OutputStream
 
-    private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-    private var socket: BluetoothSocket? = null
-    private var outputStream: OutputStream? = null
-    private val uuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-
-    fun isAvailable(): Boolean = adapter != null
-    fun isEnabled(): Boolean = adapter?.isEnabled == true
-
-    @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
-    fun connect(onSuccess: () -> Unit, onError: (Exception) -> Unit) {
-        val device: BluetoothDevice? = adapter?.bondedDevices?.find { it.address == macAddress }
-        if (device == null) {
-            Toast.makeText(context, "Dispositivo no emparejado", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        Thread @androidx.annotation.RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN) {
-            try {
-                adapter?.cancelDiscovery()
-                socket = device.createRfcommSocketToServiceRecord(uuid)
-                socket?.connect()
-                outputStream = socket?.outputStream
-                (context as? MainActivity)?.runOnUiThread { onSuccess() }
-            } catch (e: Exception) {
-                (context as? MainActivity)?.runOnUiThread { onError(e) }
-            }
-        }.start()
+    private fun createSocket(device: BluetoothDevice): BluetoothSocket {
+        val uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB") // UUID estándar para SPP
+        return device.createRfcommSocketToServiceRecord(uuid)
     }
 
-    fun send(command: String) {
+    override fun run() {
+        var bluetoothSocket: BluetoothSocket? = null
+        val device = bluetoothAdapter.getRemoteDevice(macAddress)
+
         try {
-            outputStream?.write(command.toByteArray())
-        } catch (e: Exception) {
-            Toast.makeText(context, "Error al enviar: ${e.message}", Toast.LENGTH_SHORT).show()
+            bluetoothSocket = createSocket(device)
+            bluetoothSocket.connect()  // Intenta conectar al dispositivo
+
+            if (bluetoothSocket.isConnected) {
+                Log.d("Bluetooth", "Conexión exitosa con ${device.name}")
+                // Aquí puedes inicializar los flujos de entrada y salida
+                inputStream = bluetoothSocket.inputStream
+                outputStream = bluetoothSocket.outputStream
+            } else {
+                Log.d("Bluetooth", "No se pudo conectar")
+            }
+        } catch (e: IOException) {
+            Log.d("Bluetooth", "Error de conexión: ${e.message}")
+            e.printStackTrace()
         }
     }
 
-    fun disconnect() {
-        socket?.close()
+
+    fun sendToHC05(valToSend: String) {
+        try {
+            if (bluetoothSocket?.isConnected == true) {
+                outputStream.write(valToSend.toByteArray())
+                outputStream.flush()
+                Log.d("BluetoothHandler", "Sent: $valToSend")
+            } else {
+                Log.e("BluetoothHandler", "BluetoothSocket is not connected")
+            }
+        } catch (e: Exception) {
+            Log.e("BluetoothHandler", "Error sending data", e)
+        }
+    }
+
+    fun startReceiving(onDataReceived: (String) -> Unit) {
+        if (bluetoothSocket?.isConnected == true) {
+            inputStream = bluetoothSocket!!.inputStream
+
+            Thread {
+                val buffer = ByteArray(1024)
+                var bytes: Int
+
+                while (true) {
+                    try {
+                        bytes = inputStream.read(buffer)
+                        val receivedData = String(buffer, 0, bytes).trim()
+                        onDataReceived(receivedData)
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                        break
+                    }
+                }
+            }.start()
+        }
     }
 }

@@ -1,16 +1,25 @@
 package com.zanila.ladygaga
 
+import android.Manifest
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothSocket
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.RequiresPermission
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -20,8 +29,16 @@ import com.google.android.material.button.MaterialButton
 import kotlin.math.sin
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.mikhaellopez.circularprogressbar.CircularProgressBar
+import java.io.OutputStream
+import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
+
+    private val REQUEST_BLUETOOTH_PERMISSIONS = 2
+    private var bluetoothAdapter: BluetoothAdapter? = null
+    private var bluetoothSocket: BluetoothSocket? = null
+    private var outputStream: OutputStream? = null
+    private val hc05MacAddress = "00:23:10:00:D3:38"
 
 
     private lateinit var charts: List<LineChart>
@@ -65,6 +82,58 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val buttonConnect = findViewById<Button>(R.id.btnConnect)
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+        if (bluetoothAdapter == null) {
+            Toast.makeText(this, "Bluetooth no disponible", Toast.LENGTH_LONG).show()
+            finish()
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    android.Manifest.permission.BLUETOOTH_CONNECT,
+                    Manifest.permission.BLUETOOTH_SCAN
+                ),
+                REQUEST_BLUETOOTH_PERMISSIONS
+            )
+        }
+
+        @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
+        fun connectToHC05() {
+            val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+            val device: BluetoothDevice? = pairedDevices?.find { it.address == hc05MacAddress }
+
+            if (device == null) {
+                Toast.makeText(this, "No se encontró el HC-05 emparejado", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val uuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB") // UUID SPP
+            bluetoothSocket = device.createRfcommSocketToServiceRecord(uuid)
+
+            Thread @androidx.annotation.RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN) {
+                bluetoothAdapter?.cancelDiscovery()
+                try {
+                    bluetoothSocket?.connect()
+                    outputStream = bluetoothSocket?.outputStream
+
+                    runOnUiThread {
+                        Toast.makeText(this, "Conectado al HC-05", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }.start()
+        }
+        buttonConnect.setOnClickListener {
+            connectToHC05()
+        }
+
 
         val titleText = findViewById<TextView>(R.id.titleText)
         titleText.text = "Héctor Patricio"
@@ -181,9 +250,8 @@ class MainActivity : AppCompatActivity() {
         android.util.Log.d("MainActivity", "Mostrando gráfico con índice: $currentChartIndex")
     }
 
-
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(updateRunnable)
+        bluetoothSocket?.close()
     }
 }
