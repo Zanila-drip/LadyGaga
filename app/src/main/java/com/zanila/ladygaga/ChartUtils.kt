@@ -8,11 +8,12 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import kotlin.math.sin
 
 object ChartUtils {
 
-    fun setupChart(chart: LineChart, color: Int): LineDataSet {
+    fun setupChart(chart: LineChart, color: Int): ILineDataSet {
         val dataSet = LineDataSet(null, "Tiempo real").apply {
             this.color = color
             setDrawCircles(false)
@@ -39,7 +40,7 @@ object ChartUtils {
         return dataSet
     }
 
-    fun updateChartData(x: Float, charts: List<LineChart>, dataSets: List<LineDataSet>) {
+    fun updateChartData(x: Float, charts: List<LineChart>, dataSets: List<ILineDataSet>) {
         val yValues = (0 until charts.size).map { index ->
             when (index) {
                 0 -> sin(x.toDouble()).toFloat()
@@ -52,7 +53,7 @@ object ChartUtils {
         }
 
         charts.forEachIndexed { index, chart ->
-            val dataSet = dataSets[index]
+            val dataSet = dataSets[index] as LineDataSet
             dataSet.addEntry(Entry(x, yValues[index]))
 
             if (dataSet.entryCount > 100) {
