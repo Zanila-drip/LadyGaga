@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -6,7 +7,6 @@
     android:padding="16dp">
 
     <!-- 🔝 Título o nombre -->
-
     <TextView
         android:id="@+id/titleText"
         android:layout_width="match_parent"
@@ -24,129 +24,225 @@
         android:background="#CCCCCC"
         android:layout_marginVertical="8dp"/>
 
-    <!-- 📈 Gráfico principal -->
+    <!-- 📈 Espacio para futura gráfica -->
     <FrameLayout
         android:id="@+id/chartContainer"
         android:layout_width="match_parent"
         android:layout_height="533dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="#F5F5F5">
 
-        <!-- Solo se mostrará uno a la vez -->
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart1"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="visible" />
-
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart2"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="gone" />
-
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/chart3"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="gone" />
-
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/lineChart4"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="gone" />
-
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/lineChart5"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="gone" />
-
-        <View
-            android:id="@+id/btnNext"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:background="#00000000" />
-
-        <View
-            android:id="@+id/btnPrev"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="#00000000" />
-
-        <!-- Agrega más charts aquí si los necesitas -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Espacio para gráfica"
+            android:textColor="#666666"
+            android:textSize="16sp" />
     </FrameLayout>
-    <!-- 🔝 Título o nombre -->
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#CCCCCC"
+        android:layout_marginVertical="8dp"/>
+
+    <!-- 📝 Columna de textos -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="271dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
 
-        <!-- 📝 Columna de textos -->
+        <!-- Modo Simulación -->
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Modo Simulación"
+                android:textStyle="bold"
+                android:layout_marginEnd="8dp"/>
+
+            <Switch
+                android:id="@+id/switchSimulacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Datos Reales"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Datos Simulados"
+                android:textStyle="bold"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/linea1"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Línea 1" />
 
             <TextView
-                android:id="@+id/linea2"
-                android:layout_width="match_parent"
+                android:id="@+id/linea1_anterior"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="--" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/linea2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Línea 2" />
 
             <TextView
-                android:id="@+id/linea3"
-                android:layout_width="match_parent"
+                android:id="@+id/linea2_anterior"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="--" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/linea3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Línea 3" />
 
             <TextView
-                android:id="@+id/infoText"
-                android:layout_width="match_parent"
+                android:id="@+id/linea3_anterior"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="--" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/infoText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Línea 4" />
 
-            <View
-                android:id="@+id/lightIndicator"
-                android:layout_width="93dp"
-                android:layout_height="98dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/light_bulb" />
+            <TextView
+                android:id="@+id/infoText_anterior"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="--" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnConnect"
-                android:layout_width="72dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:text="Conectar"
+                android:layout_width="65dp"
+                android:layout_height="67dp"
+                android:backgroundTint="#2196F3"
+                android:text=""
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnSendData"
+                android:layout_width="65dp"
+                android:layout_height="67dp"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#4CAF50"
+                android:text=""
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnSendSimulatedData"
+                android:layout_width="65dp"
+                android:layout_height="67dp"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="#FF9800"
+                android:text=""
                 android:textSize="18sp" />
         </LinearLayout>
 
-        <!-- 🔘 Botón a la derecha -->
-        <Button
-            android:id="@+id/btnSmile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text=":)"
-            android:textSize="24sp" />
+        <TextView
+            android:id="@+id/processingStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Datos procesando"
+            android:textColor="#666666"
+            android:visibility="gone" />
     </LinearLayout>
 
+    <!-- 🔘 Botón a la derecha -->
+    <Button
+        android:id="@+id/btnSmile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=":)"
+        android:textSize="24sp" />
 
-
-    <!-- Divider superior -->
+    <!-- Recomendación de la bomba -->
+    <TextView
+        android:id="@+id/pumpRecommendation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="8dp"
+        android:textColor="#666666"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <!-- Divider inferior -->
     <View
@@ -160,8 +256,6 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <!-- 📝 Información -->
 
         <!-- 🔘 Círculos -->
         <LinearLayout
@@ -193,9 +287,6 @@
                 android:layout_height="24dp"
                 android:background="@drawable/led_off"
                 android:layout_margin="4dp" />
-
-
-
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
