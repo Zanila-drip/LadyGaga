@@ -33,19 +33,19 @@
 
         <!-- Solo se mostrará uno a la vez -->
         <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/lineChart1"
+            android:id="@+id/chart1"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:visibility="visible" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart2"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:visibility="gone" />
 
         <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/lineChart2"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="gone" />
-
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/lineChart3"
+            android:id="@+id/chart3"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:visibility="gone" />
@@ -55,7 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:visibility="gone" />
-
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/lineChart5"
@@ -111,6 +110,12 @@
                 android:layout_height="wrap_content"
                 android:text="Línea 3" />
 
+            <TextView
+                android:id="@+id/infoText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Línea 4" />
+
             <View
                 android:id="@+id/lightIndicator"
                 android:layout_width="93dp"
@@ -121,7 +126,7 @@
 
             <Button
                 android:id="@+id/btnConnect"
-                android:layout_width="wrap_content"
+                android:layout_width="72dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"
@@ -157,14 +162,6 @@
         android:layout_height="wrap_content">
 
         <!-- 📝 Información -->
-        <TextView
-            android:id="@+id/infoText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Información aquí"
-            android:textSize="16sp"
-            android:padding="8dp" />
 
         <!-- 🔘 Círculos -->
         <LinearLayout
